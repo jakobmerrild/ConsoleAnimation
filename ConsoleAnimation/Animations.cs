@@ -1,7 +1,17 @@
 namespace ConsoleAnimation
 {
+    /// <summary>
+    /// Static class which can create some 'standard' animations.
+    /// </summary>
     public static class Animations
     {
+        /// <summary>
+        /// Creates a 'blinking sun' animation by use of <see cref="Frames.Sun"/>
+        /// and an empty frame. The animation is best played at 2 frames per second.
+        /// Which is also what it will be set to.
+        /// </summary>
+        /// <param name="numberOfFrames">How long the animation should be in frames.</param>
+        /// <returns>An animation where every other frame is a sun and every other frame is empty.</returns>
         public static Animation BlinkingSun(int numberOfFrames)
         {
             var animation = new Animation(numberOfFrames);
@@ -19,6 +29,12 @@ namespace ConsoleAnimation
             return animation;
         }
 
+        /// <summary>
+        /// Create a 'cheering man' animation.
+        /// The animation is best played at 4 frames per second.
+        /// </summary>
+        /// <param name="numberOfFrames">How long the animation should be in frames.</param>
+        /// <returns>An animation of a man who continously raises and lowers his arms.</returns>
         public static Animation CheeringMan(int numberOfFrames)
         {
             var animation = new Animation(numberOfFrames);

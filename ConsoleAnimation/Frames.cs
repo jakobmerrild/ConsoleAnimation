@@ -2,10 +2,18 @@ using System;
 
 namespace ConsoleAnimation
 {
+    /// <summary>
+    /// A static class containing a set of "standard" frames.
+    /// </summary>
     public static class Frames
     {
         private static Frame _sun;
+
+        /// <summary>
+        /// A 10x10 frame which has a 'sun' in the upper left corner.
+        /// </summary>
         public static Frame Sun = _sun ?? (_sun = CreateSun());
+
         private static Frame CreateSun(){
             var frame = new Frame();
             frame.SetPixel(0, 0, '\\');
@@ -22,6 +30,9 @@ namespace ConsoleAnimation
 
         private static Frame _man;
 
+        /// <summary>
+        /// A 10x10 frame which has a 'man' in the middle bottom.
+        /// </summary>
         public static Frame Man = _man ?? (_man = CreateMan());
 
         private static Frame CreateMan(){
