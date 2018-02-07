@@ -13,6 +13,11 @@ namespace ConsoleAnimation
         /// The underlying char array which forms the frames pixels.
         /// </summary>
         private char[][] pixels;
+
+        /// <summary>
+        /// The color of each pixel.
+        /// </summary>
+        private ConsoleColor[][] colors;
         /// <summary>
         /// The width of the frame.
         /// </summary>
@@ -26,6 +31,18 @@ namespace ConsoleAnimation
         /// An empty pixel is the ' ' character, as it won't be drawn.
         /// </summary>
         public const char EmptyPixel = ' ';
+
+        /// <summary>
+        /// The default pixel color which is used when no color is specified.
+        /// </summary>
+        public const ConsoleColor DefaultPixelColor = ConsoleColor.Gray;
+
+        /// <summary>
+        /// Gets or sets the current pixel color for this frame.
+        /// This is the color which will be used for new pixels if no other
+        /// color is specified.
+        /// </summary>
+        public ConsoleColor PixelColor { get; set; }
 
         /// <summary>
         /// Instantiates a default frame with width and height of 10 pixels.
@@ -42,9 +59,12 @@ namespace ConsoleAnimation
             this.width = width;
             this.height = height;
             pixels = new char[width][];
+            colors = new ConsoleColor[width][];
             for(int x = 0; x < width; x++){
                 pixels[x] = new char[height];
+                colors[x] = new ConsoleColor[height];
             }
+            PixelColor = DefaultPixelColor;
             // Set all pixels to the empty pixel.
             Reset();
         }
@@ -60,6 +80,7 @@ namespace ConsoleAnimation
                 for(int y = 0; y < height; y++)
                 {
                     SetPixel(x, y, EmptyPixel);
+                    SetColor(x, y, PixelColor);
                 }    
             }  
             return this; 
@@ -76,12 +97,27 @@ namespace ConsoleAnimation
         /// <param name="value">The value it should be set to.</param>
         /// <returns>The frame itself for chained method calling.</returns>
         public Frame SetPixel(int x, int y, char value){
+            return SetPixel(x, y, value, PixelColor);
+        }
+
+        public Frame SetPixel(int x, int y, char pixelValue, ConsoleColor colorValue){
             if(!WithinFrame(x, y))
             {
                 System.Console.Error.WriteLine("Trying to set pixel outside frame.");
                 return this;
             }
-            pixels[x][y] = value;
+            pixels[x][y] = pixelValue;
+            SetColor(x, y, colorValue);
+            return this;
+        }
+
+        public Frame SetColor(int x, int y, ConsoleColor value){
+            if(!WithinFrame(x,y))
+            {
+                System.Console.Error.WriteLine("Trying to set color outside frame.");
+                return this;
+            }
+            colors[x][y] = value;
             return this;
         }
 
@@ -90,14 +126,17 @@ namespace ConsoleAnimation
         /// </summary>
         public void Draw()
         {
+            var oldConsoleColor = Console.ForegroundColor;
             for(int y = 0; y < height; y++)
             {
                 for(int x = 0; x < width; x++)
                 {
+                    Console.ForegroundColor = colors[x][y];
                     Console.Write(pixels[x][y]);
                 }
                 System.Console.WriteLine();
             }
+            Console.ForegroundColor = oldConsoleColor;
         }
 
         /// <summary>
