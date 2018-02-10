@@ -45,5 +45,17 @@ namespace ConsoleAnimation
             frame.SetPixel(5, 7, 'o');
             return frame;
         }
+
+        private static Frame _meh;
+
+        public static Frame Meh = _meh ?? (_meh = CreateMeh());
+
+        private static Frame CreateMeh() {
+            var frame = new Frame();
+           frame.SetPixel(3, 0, '(');
+           frame.SetPixel(4, 0, 'ツ');
+           frame.SetPixel(5, 0, ')');
+           return frame;
+        }
     }
 }

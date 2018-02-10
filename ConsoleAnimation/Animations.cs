@@ -64,5 +64,39 @@ namespace ConsoleAnimation
             }
             return animation;
         }
+
+        /// <summary>
+        /// Creates an anmation of the "meh" ASCII drawing utilizing <see cref="Frames.Meh"/>
+        /// ¯\_(ツ)_/¯ --> for reference
+        /// </summary>
+        /// <param name="numberOfFrames">How long the animation should be in frames.</param>
+        /// <returns>An animation where every other frame is a sun and every other frame is empty.</returns>
+        public static Animation ShrugingMeh(int numberOfFrames) {
+            var animation = new Animation(numberOfFrames);
+            animation.FramesPerSecond = 2;
+
+            var meh = Frames.Meh;
+            var mehShrug = meh.Copy();
+
+            // potentially we can have a question asking how we can avoid so much lines
+            // that do the same with small alterations
+            mehShrug.SetPixel(0, 0, '¯');
+            mehShrug.SetPixel(1, 0, '\\');
+            mehShrug.SetPixel(2, 0, '_');
+
+            mehShrug.SetPixel(8, 0, '¯');
+            mehShrug.SetPixel(7, 0, '/');
+            mehShrug.SetPixel(6, 0, '_');
+
+            for(int i = 0; i < numberOfFrames; i++) {
+                if(i % 2 == 0){
+                    animation.AddFrame(meh);
+                } else {
+                    animation.AddFrame(mehShrug);
+                }
+                
+            }
+            return animation;
+        }
     }
 }
