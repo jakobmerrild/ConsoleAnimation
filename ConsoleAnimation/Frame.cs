@@ -17,7 +17,9 @@ namespace ConsoleAnimation
         /// <summary>
         /// The color of each pixel.
         /// </summary>
-        private ConsoleColor[][] colors;
+        private ConsoleColor[][] foregroundColors;
+
+        private ConsoleColor[][] backgroundColors;
         /// <summary>
         /// The width of the frame.
         /// </summary>
@@ -38,11 +40,24 @@ namespace ConsoleAnimation
         public const ConsoleColor DefaultPixelColor = ConsoleColor.Gray;
 
         /// <summary>
+        /// The default background color which is used when no background color is specified.
+        /// </summary>
+        public const ConsoleColor DefaultBackgroundColor = ConsoleColor.Black;
+
+        /// <summary>
         /// Gets or sets the current pixel color for this frame.
         /// This is the color which will be used for new pixels if no other
         /// color is specified.
         /// </summary>
         public ConsoleColor PixelColor { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current background color for this frame.
+        /// This is the color which will be used for the background for new
+        /// pixels if no other color is specified.
+        /// </summary>
+        /// <returns></returns>
+        public ConsoleColor BackGroundColor { get; set; }
 
         /// <summary>
         /// Instantiates a default frame with width and height of 10 pixels.
@@ -59,18 +74,22 @@ namespace ConsoleAnimation
             this.width = width;
             this.height = height;
             pixels = new char[width][];
-            colors = new ConsoleColor[width][];
+            foregroundColors = new ConsoleColor[width][];
+            backgroundColors = new ConsoleColor[width][];
             for(int x = 0; x < width; x++){
                 pixels[x] = new char[height];
-                colors[x] = new ConsoleColor[height];
+                foregroundColors[x] = new ConsoleColor[height];
+                backgroundColors[x] = new ConsoleColor[height];
             }
             PixelColor = DefaultPixelColor;
+            BackGroundColor = DefaultBackgroundColor;
             // Set all pixels to the empty pixel.
             Reset();
         }
 
         /// <summary>
-        /// Resets the frame by setting all pixels to be the empty pixel
+        /// Resets the frame by setting all pixels to be the empty pixel.
+        /// And setting all pixel and background colors to the currently specified values.
         /// </summary>
         /// <returns>The frame itself for chained method calling.</returns>
         public Frame Reset()
@@ -79,11 +98,28 @@ namespace ConsoleAnimation
             {
                 for(int y = 0; y < height; y++)
                 {
-                    SetPixel(x, y, EmptyPixel);
-                    SetColor(x, y, PixelColor);
+                    SetPixel(x, y, EmptyPixel, PixelColor, BackGroundColor);
                 }    
             }  
             return this; 
+        }
+
+        /// <summary>
+        /// Sets the background color at a specified coordinate to a given value.
+        /// </summary>
+        /// <param name="x">The x-coordinate</param>
+        /// <param name="y">The y-coordinate</param>
+        /// <param name="backGroundColor">The value to set it to.</param>
+        /// <returns>The frame itself for chained method calling.</returns>
+        public Frame SetBackGround(int x, int y, ConsoleColor backGroundColor)
+        {
+            if(!WithinFrame(x,y))
+            {
+                System.Console.Error.WriteLine("Trying to set background outside frame.");
+                return this;
+            }
+            backgroundColors[x][y] = backGroundColor;
+            return this;
         }
 
         /// <summary>
@@ -100,15 +136,20 @@ namespace ConsoleAnimation
             return SetPixel(x, y, value, PixelColor);
         }
 
-        public Frame SetPixel(int x, int y, char pixelValue, ConsoleColor colorValue){
+        public Frame SetPixel(int x, int y, char pixelValue, ConsoleColor pixelColor){
+            return SetPixel(x, y, pixelValue, pixelColor, BackGroundColor);
+        }
+
+        public Frame SetPixel(int x, int y, char pixelValue, ConsoleColor pixelColor, ConsoleColor backgroundColor){
             if(!WithinFrame(x, y))
             {
                 System.Console.Error.WriteLine("Trying to set pixel outside frame.");
                 return this;
             }
             pixels[x][y] = pixelValue;
-            SetColor(x, y, colorValue);
-            return this;
+            SetColor(x, y, pixelColor);
+            SetBackGround(x, y, backgroundColor);
+            return this;  
         }
 
         public Frame SetColor(int x, int y, ConsoleColor value){
@@ -117,7 +158,7 @@ namespace ConsoleAnimation
                 System.Console.Error.WriteLine("Trying to set color outside frame.");
                 return this;
             }
-            colors[x][y] = value;
+            foregroundColors[x][y] = value;
             return this;
         }
 
@@ -126,17 +167,20 @@ namespace ConsoleAnimation
         /// </summary>
         public void Draw()
         {
-            var oldConsoleColor = Console.ForegroundColor;
+            var oldForegroundColor = Console.ForegroundColor;
+            var oldBackgroundColor = Console.BackgroundColor;
             for(int y = 0; y < height; y++)
             {
                 for(int x = 0; x < width; x++)
                 {
-                    Console.ForegroundColor = colors[x][y];
+                    Console.ForegroundColor = foregroundColors[x][y];
+                    Console.BackgroundColor = backgroundColors[x][y];
                     Console.Write(pixels[x][y]);
                 }
                 System.Console.WriteLine();
             }
-            Console.ForegroundColor = oldConsoleColor;
+            Console.ForegroundColor = oldForegroundColor;
+            Console.BackgroundColor = oldBackgroundColor;
         }
 
         /// <summary>
@@ -146,6 +190,8 @@ namespace ConsoleAnimation
         public Frame Copy(){
             var newFrame = new Frame(this.width, this.height);
             newFrame.AddOverLay(this);
+            newFrame.PixelColor = this.PixelColor;
+            newFrame.BackGroundColor = this.BackGroundColor;
             return newFrame;
         }
         
@@ -162,7 +208,7 @@ namespace ConsoleAnimation
                 for(var y = 0; y < height; y++)
                 {
                     if(overLay.WithinFrame(x,y) && overLay.pixels[x][y] != EmptyPixel)
-                        SetPixel(x, y, overLay.pixels[x][y]);
+                        SetPixel(x, y, overLay.pixels[x][y], overLay.foregroundColors[x][y], overLay.backgroundColors[x][y]);
                 }
             }
             return this;

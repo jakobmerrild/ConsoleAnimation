@@ -38,6 +38,7 @@ namespace ConsoleAnimation
 
         private static Frame CreateMan(){
             var frame = new Frame();
+            frame.PixelColor = ConsoleColor.Green;
             frame.SetPixel(4, 9, '/');
             frame.SetPixel(6, 9, '\\');
             frame.SetPixel(5, 8, '|');

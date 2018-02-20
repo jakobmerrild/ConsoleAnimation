@@ -87,12 +87,16 @@ namespace ConsoleAnimation
         public void Animate()
         {
             var oldCursorVisible = Console.CursorVisible;
+            var oldBackGroundColor = Console.BackgroundColor;
+            var oldForeGroundColor = Console.ForegroundColor;
             Console.CursorVisible = false;
             foreach(var frame in frames){
                 Console.Clear();
                 frame.Draw();
                 Thread.Sleep(1000/FramesPerSecond);
             }
+            Console.ForegroundColor = oldForeGroundColor;
+            Console.BackgroundColor = oldBackGroundColor;
             Console.CursorVisible = oldCursorVisible;
         }
     }
