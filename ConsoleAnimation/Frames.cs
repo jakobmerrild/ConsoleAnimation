@@ -10,12 +10,13 @@ namespace ConsoleAnimation
         private static Frame _sun;
 
         /// <summary>
-        /// A 10x10 frame which has a 'sun' in the upper left corner.
+        /// A 10x10 frame which has a yellow 'sun' in the upper left corner.
         /// </summary>
         public static Frame Sun = _sun ?? (_sun = CreateSun());
 
         private static Frame CreateSun(){
             var frame = new Frame();
+            frame.PixelColor = ConsoleColor.Yellow;
             frame.SetPixel(0, 0, '\\');
             frame.SetPixel(1, 0, '|');
             frame.SetPixel(2, 0, '/');
@@ -37,6 +38,7 @@ namespace ConsoleAnimation
 
         private static Frame CreateMan(){
             var frame = new Frame();
+            frame.PixelColor = ConsoleColor.Green;
             frame.SetPixel(4, 9, '/');
             frame.SetPixel(6, 9, '\\');
             frame.SetPixel(5, 8, '|');

@@ -7,7 +7,7 @@ namespace ConsoleAnimation
         static void Main(string[] args)
         {
             var animation = Animations.CheeringMan(20).AddOverLay(Animations.BlinkingSun(20));
-            animation.FramesPerSecond = 2;
+            animation.FramesPerSecond = 4;
             animation.Animate();
         }
     }
