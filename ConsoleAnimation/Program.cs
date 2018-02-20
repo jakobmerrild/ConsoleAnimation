@@ -6,9 +6,10 @@ namespace ConsoleAnimation
     {
         static void Main(string[] args)
         {
-            var animation = Animations.CheeringMan(20).AddOverLay(Animations.BlinkingSun(20));
-            animation.FramesPerSecond = 2;
-            animation.Animate();
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            
+            var frameReader = new FrameReader("frames.txt");
+            frameReader.ReadFrame(7,2).Draw();
         }
     }
 }
