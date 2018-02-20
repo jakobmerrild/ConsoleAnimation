@@ -17,13 +17,18 @@ namespace ConsoleAnimation
         /// <summary>
         /// The color of each pixel.
         /// </summary>
-        private ConsoleColor[][] foregroundColors;
+        private ConsoleColor[][] pixelColors;
 
+        /// <summary>
+        /// The background colors of each pixel
+        /// </summary>
         private ConsoleColor[][] backgroundColors;
+
         /// <summary>
         /// The width of the frame.
         /// </summary>
         private int width;
+
         /// <summary>
         /// The height of the frame.
         /// </summary>
@@ -56,7 +61,6 @@ namespace ConsoleAnimation
         /// This is the color which will be used for the background for new
         /// pixels if no other color is specified.
         /// </summary>
-        /// <returns></returns>
         public ConsoleColor BackGroundColor { get; set; }
 
         /// <summary>
@@ -74,11 +78,11 @@ namespace ConsoleAnimation
             this.width = width;
             this.height = height;
             pixels = new char[width][];
-            foregroundColors = new ConsoleColor[width][];
+            pixelColors = new ConsoleColor[width][];
             backgroundColors = new ConsoleColor[width][];
             for(int x = 0; x < width; x++){
                 pixels[x] = new char[height];
-                foregroundColors[x] = new ConsoleColor[height];
+                pixelColors[x] = new ConsoleColor[height];
                 backgroundColors[x] = new ConsoleColor[height];
             }
             PixelColor = DefaultPixelColor;
@@ -111,7 +115,7 @@ namespace ConsoleAnimation
         /// <param name="y">The y-coordinate</param>
         /// <param name="backGroundColor">The value to set it to.</param>
         /// <returns>The frame itself for chained method calling.</returns>
-        public Frame SetBackGround(int x, int y, ConsoleColor backGroundColor)
+        public Frame SetBackgroundColor(int x, int y, ConsoleColor backGroundColor)
         {
             if(!WithinFrame(x,y))
             {
@@ -136,10 +140,27 @@ namespace ConsoleAnimation
             return SetPixel(x, y, value, PixelColor);
         }
 
+        /// <summary>
+        /// Sets a pixel to be a certain value and have a certain color given its coordinates
+        /// </summary>
+        /// <param name="x">The x-coordinate of the pixel.</param>
+        /// <param name="y">The y-coordinate of the pixe.</param>
+        /// <param name="pixelValue">The value the pixel should have.</param>
+        /// <param name="pixelColor">The color the pixel should have.</param>
+        /// <returns>The frame itself for chained method calling.</returns>
         public Frame SetPixel(int x, int y, char pixelValue, ConsoleColor pixelColor){
             return SetPixel(x, y, pixelValue, pixelColor, BackGroundColor);
         }
-
+        
+        /// <summary>
+        /// Sets a pixel to be a certain value, have a certain color, and a certain background color given its coordinates.
+        /// </summary>
+        /// <param name="x">The x-coordinate of the pixel</param>
+        /// <param name="y">The y-coordinate of the pixel</param>
+        /// <param name="pixelValue">The value the pixel should have</param>
+        /// <param name="pixelColor">The color the pixel should have</param>
+        /// <param name="backgroundColor">The background color the pixel should have</param>
+        /// <returns></returns>
         public Frame SetPixel(int x, int y, char pixelValue, ConsoleColor pixelColor, ConsoleColor backgroundColor){
             if(!WithinFrame(x, y))
             {
@@ -147,18 +168,25 @@ namespace ConsoleAnimation
                 return this;
             }
             pixels[x][y] = pixelValue;
-            SetColor(x, y, pixelColor);
-            SetBackGround(x, y, backgroundColor);
+            SetPixelColor(x, y, pixelColor);
+            SetBackgroundColor(x, y, backgroundColor);
             return this;  
         }
 
-        public Frame SetColor(int x, int y, ConsoleColor value){
+        /// <summary>
+        /// Sets the pixel(foreground) color at a given coordinate
+        /// </summary>
+        /// <param name="x">The x-coordinate</param>
+        /// <param name="y">The y-coordinate</param>
+        /// <param name="value">The color the pixel should have</param>
+        /// <returns>The frame itself for chained method calling</returns>
+        public Frame SetPixelColor(int x, int y, ConsoleColor value){
             if(!WithinFrame(x,y))
             {
                 System.Console.Error.WriteLine("Trying to set color outside frame.");
                 return this;
             }
-            foregroundColors[x][y] = value;
+            pixelColors[x][y] = value;
             return this;
         }
 
@@ -173,7 +201,7 @@ namespace ConsoleAnimation
             {
                 for(int x = 0; x < width; x++)
                 {
-                    Console.ForegroundColor = foregroundColors[x][y];
+                    Console.ForegroundColor = pixelColors[x][y];
                     Console.BackgroundColor = backgroundColors[x][y];
                     Console.Write(pixels[x][y]);
                 }
@@ -208,7 +236,7 @@ namespace ConsoleAnimation
                 for(var y = 0; y < height; y++)
                 {
                     if(overLay.WithinFrame(x,y) && overLay.pixels[x][y] != EmptyPixel)
-                        SetPixel(x, y, overLay.pixels[x][y], overLay.foregroundColors[x][y], overLay.backgroundColors[x][y]);
+                        SetPixel(x, y, overLay.pixels[x][y], overLay.pixelColors[x][y], overLay.backgroundColors[x][y]);
                 }
             }
             return this;
